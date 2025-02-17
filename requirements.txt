@@ -1,0 +1,6 @@
+flask-sqlalchemy
+pymysql
+mysql-connector-python  # Alternative MySQL adapter
+flask-login
+flask-bcrypt
+python-dotenv

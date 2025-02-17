@@ -1,0 +1,7 @@
+.env
+
+# python cache files
+__pycache__/
+
+# virtual environment
+recipe/
