@@ -3,21 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recipe Book App</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>{% block title %}Recipe Book App{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
 </head>
 <body>
-    <header>
+    <header class="bg-primary text-white text-center py-3">
         <h1>Welcome to the Recipe Book App</h1>
     </header>
-    <main>
-        <section id="recipes">
-            <h2>Recipes</h2>
-            <!-- Recipe list will go here -->
-        </section>
+    <main class="container my-4">
+        {% block content %}{% endblock %}
     </main>
-    <footer>
-        <p>&copy; 2023 Recipe Book App</p>
+    <footer class="bg-light text-center py-3">
+        <p>&copy; 2025 Recipe Book App</p>
     </footer>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
-</html></section>
+</html>

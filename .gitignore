@@ -5,3 +5,5 @@ __pycache__/
 
 # virtual environment
 recipe/
+
+migration/

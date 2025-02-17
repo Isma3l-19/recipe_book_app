@@ -18,7 +18,7 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
     db.init_app(app)
-
+        
     # Register Blueprints here (import inside function to avoid circular import)
     from routes import routes_bp
     app.register_blueprint(routes_bp)  # Register routes correctly
