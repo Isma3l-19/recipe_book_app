@@ -1,16 +1,71 @@
-from flask import Blueprint, render_template, request, redirect, url_for, jsonify, flash
-from flask_login import login_required, current_user
+from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask_login import login_required, current_user, login_user, logout_user, login_manager
 from config import db
-from models import Recipe
+from models import Recipe, User
 
 # Create Blueprint instead of creating a new app
 routes_bp = Blueprint('routes', __name__)
+
+# Redirect to login page if user is not authenticated
+login_manager.login_view = 'routes.login'
 
 # Route: Home Page (List Recipes)
 @routes_bp.route('/')
 def home():
     recipes = Recipe.query.order_by(Recipe.created_at.desc()).all()
     return render_template('index.html', recipes=recipes)
+
+# Route: Sign Up to application
+@routes_bp.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if current_user.is_authenticated:
+        return redirect(url_for('routes.home'))
+    
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        username = request.form.get('username')
+        
+        user = User.query.filter_by(email=email).first()
+        if user:
+            flash('Email address already exists')
+            return redirect(url_for('routes.signup'))
+        
+        new_user = User(email=email, username=username)
+        new_user.set_password(password)
+        db.session.add(new_user)
+        db.session.commit()
+        
+        login_user(new_user)
+        return redirect(url_for('routes.home'))
+    
+    return render_template('signup.html')
+
+# Route: Login to application
+@routes_bp.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('routes.home'))
+    
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        user = User.query.filter_by(email=email).first()
+        
+        if user and user.check_password(password):
+            login_user(user)
+            return redirect(url_for('routes.home'))
+        else:
+            flash('Invalid email or password')
+    
+    return render_template('login.html')
+
+# Route: Logout from application
+@routes_bp.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('routes.home'))
 
 # Route: Add a New Recipe
 @routes_bp.route('/add', methods=['GET', 'POST'])
