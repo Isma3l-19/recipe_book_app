@@ -1,13 +1,15 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user, login_user, logout_user, login_manager
-from config import db
+from config import db, login_manager
 from models import Recipe, User
+from werkzeug.security import check_password_hash
 
 # Create Blueprint instead of creating a new app
 routes_bp = Blueprint('routes', __name__)
 
-# Redirect to login page if user is not authenticated
-login_manager.login_view = 'routes.login'
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 # Route: Home Page (List Recipes)
 @routes_bp.route('/')
