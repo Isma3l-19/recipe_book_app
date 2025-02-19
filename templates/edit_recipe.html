@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <h2>✏️ Edit Recipe</h2>
+    <form method="POST">
+        <div class="form-group">
+            <label>Recipe Title</label>
+            <input type="text" name="title" class="form-control" value="{{ recipe.title }}" required>
+        </div>
+        <div class="form-group">
+            <label>Ingredients</label>
+            <textarea name="ingredients" class="form-control" required>{{ recipe.ingredients }}</textarea>
+        </div>
+        <div class="form-group">
+            <label>Instructions</label>
+            <textarea name="instructions" class="form-control" required>{{ recipe.instructions }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-success">✅ Save Changes</button>
+        <a href="{{ url_for('routes.my_recipes') }}" class="btn btn-secondary">↩️ Cancel</a>
+    </form>
+</div>
+{% endblock %}

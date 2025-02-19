@@ -1,24 +1,50 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Recipe Book App{% endblock %}</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}Home | Recipe Book App{% endblock %}
+
+{% block content %}
     <header class="bg-primary text-white text-center py-3">
         <h1>Welcome to the Recipe Book App</h1>
+        <p>Discover and share delicious recipes!</p>
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('routes.add_recipe') }}" class="btn btn-light mt-2">➕ Add a Recipe</a>
+        {% else %}
+            <a href="{{ url_for('routes.signup') }}" class="btn btn-light mt-2">📝 Sign Up to Add Recipes</a>
+        {% endif %}
     </header>
-    <main class="container my-4">
-        {% block content %}{% endblock %}
-    </main>
+
+    <div class="container my-4">
+        <h2 class="text-center mb-4">🍽️ Latest Recipes</h2>
+
+        {% if recipes %}
+            <div class="row">
+                {% for recipe in recipes %}
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <img src="{{ recipe.image_url or url_for('static', filename='default_recipe.jpg') }}" 
+                                 class="card-img-top" alt="{{ recipe.title }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ recipe.title }}</h5>
+                                <p class="card-text"><strong>By:</strong> {{ recipe.user.username }}</p>
+                                <p class="card-text"><strong>Likes:</strong> {{ recipe.likes }}</p>
+                                <a href="{{ url_for('routes.trending') }}" class="btn btn-outline-primary btn-sm">🔥 Trending</a>
+                                {% if current_user.is_authenticated and recipe.user_id == current_user.id %}
+                                    <a href="{{ url_for('routes.edit_recipe', recipe_id=recipe.id) }}" class="btn btn-outline-warning btn-sm">✏️ Edit</a>
+                                    <form action="{{ url_for('routes.delete_recipe', recipe_id=recipe.id) }}" method="POST" style="display:inline;">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">🗑️ Delete</button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-center">No recipes available. Be the first to add one!</p>
+        {% endif %}
+    </div>
+
     <footer class="bg-light text-center py-3">
         <p>&copy; 2025 Recipe Book App</p>
     </footer>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <h2>📖 My Recipes</h2>
+    <a href="{{ url_for('routes.add_recipe') }}" class="btn btn-success">➕ Add New Recipe</a>
+
+    {% if recipes %}
+        <div class="recipe-list">
+            {% for recipe in recipes %}
+                <div class="recipe-item">
+                    <h3>{{ recipe.title }}</h3>
+                    <p><strong>Ingredients:</strong> {{ recipe.ingredients }}</p>
+                    <p><strong>Instructions:</strong> {{ recipe.instructions }}</p>
+                    <p><strong>Created On:</strong> {{ recipe.created_at.strftime('%Y-%m-%d') }}</p>
+                    
+                    <a href="{{ url_for('routes.edit_recipe', recipe_id=recipe.id) }}" class="btn btn-primary">✏️ Edit</a>
+                    <form action="{{ url_for('routes.delete_recipe', recipe_id=recipe.id) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-danger">🗑️ Delete</button>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No recipes found. Start by adding a new one!</p>
+    {% endif %}
+</div>
+{% endblock %}

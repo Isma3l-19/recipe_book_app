@@ -69,6 +69,14 @@ def logout():
     logout_user()
     return redirect(url_for('routes.home'))
 
+# Route: View Recipe Details
+@routes_bp.route('/my-recipes')
+@login_required
+def my_recipes():
+    user_recipes = Recipe.query.filter_by(user_id=current_user.id).order_by(Recipe.created_at.desc()).all()
+    return render_template('my_recipes.html', recipes=user_recipes)
+
+
 # Route: Add a New Recipe
 @routes_bp.route('/add', methods=['GET', 'POST'])
 @login_required
@@ -103,6 +111,28 @@ def delete_recipe(recipe_id):
     db.session.delete(recipe)
     db.session.commit()
     return redirect(url_for('routes.home'))
+
+# Edit Recipe
+@routes_bp.route('/edit-recipe/<int:recipe_id>', methods=['GET', 'POST'])
+@login_required
+def edit_recipe(recipe_id):
+    recipe = Recipe.query.get_or_404(recipe_id)
+
+    # Ensure the recipe belongs to the current user
+    if recipe.user_id != current_user.id:
+        flash('Unauthorized access!', 'danger')
+        return redirect(url_for('routes.my_recipes'))
+
+    if request.method == 'POST':
+        recipe.title = request.form.get('title')
+        recipe.ingredients = request.form.get('ingredients')
+        recipe.instructions = request.form.get('instructions')
+        db.session.commit()
+        flash('Recipe updated successfully!', 'success')
+        return redirect(url_for('routes.my_recipes'))
+
+    return render_template('edit_recipe.html', recipe=recipe)
+
 
 # Route: Get Trending Recipes (Most Viewed and Liked)
 @routes_bp.route('/trending')

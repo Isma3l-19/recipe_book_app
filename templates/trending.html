@@ -1,12 +1,32 @@
 {% extends "base.html" %}
 
+{% block title %}Trending Recipes | Recipe Book App{% endblock %}
+
 {% block content %}
-<header>
-    <h1>Trending Recipes</h1>
-</header>
-<main>
-    <section id="trending-recipes">
-        <!-- Example of a recipe -->
-    </section>
-</main>
+<div class="container">
+    <header class="text-center my-4">
+        <h1>🔥 Trending Recipes</h1>
+        <p>Check out the most liked recipes!</p>
+    </header>
+
+    {% if recipes %}
+        <div class="row">
+            {% for recipe in recipes %}
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm">
+                        <img src="{{ recipe.image_url or url_for('static', filename='default_recipe.jpg') }}" 
+                             class="card-img-top" alt="{{ recipe.title }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ recipe.title }}</h5>
+                            <p class="card-text"><strong>By:</strong> {{ recipe.user.username }}</p>
+                            <p class="card-text"><strong>Likes:</strong> {{ recipe.likes }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-center">No trending recipes yet. Be the first to make one go viral!</p>
+    {% endif %}
+</div>
 {% endblock %}
