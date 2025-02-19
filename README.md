@@ -59,4 +59,4 @@ This project is licensed under the MIT License.
 
 ## Contact
 
-For any inquiries, please contact [your email](mailto:ismaelnyambu.99@gmail.com).
+For any inquiries, please contact [My email](mailto:ismaelnyambu.99@gmail.com).
